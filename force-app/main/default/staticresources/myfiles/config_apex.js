@@ -5,17 +5,6 @@ var urlSearch = new URLSearchParams(location.hash)
 var custom = JSON.parse(urlSearch.get('custom'));
 resourceURL = resourceURL + custom.namespacePrefix;
 
-var script = document.createElement('script');
-script.type = 'text/javascript';
-script.src = custom.path + '/video.js';
-document.head.appendChild(script);
-
-var onLoadPromise = new Promise(function (resolve) {
-  script.onload = function () {
-    resolve();
-  }
-});
-
 /**
  * The following `window.Core.set*` functions point WebViewer to the
  * optimized source code specific for the Salesforce platform, to ensure the
@@ -134,22 +123,6 @@ window.addEventListener('viewerLoaded', async function () {
 
   const annotationManager = await instance.Core.documentViewer.getAnnotationManager();
 
-  onLoadPromise
-    .then(function () {
-      var customContainer = window.document.querySelector('.custom-container');
-
-      instance.openElements('notesPanel');
-      instance.setTheme('dark');
-      window.WebViewerVideo.initializeVideoViewer(instance, 'Questline Inc. (questline.com):ENTERP:eClouds Milestones::B+:AMS(20230612):D5A56AFD0437060AF360B13AC982537820610F9B99481E259BADB48AED3C30B042D431F5C7')
-        .then(({ loadVideo }) => {
-          const videoUrl = 'https://pdftron.s3.amazonaws.com/downloads/pl/video/video.mp4';
-          loadVideo(videoUrl);
-
-          instance.docViewer.on('documentLoaded', () => {
-            window.WebViewerVideo.renderControlsToDOM(instance, customContainer);
-          });
-        });
-    });
 });
 
 window.addEventListener("message", receiveMessage, false);
